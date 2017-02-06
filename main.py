@@ -67,6 +67,73 @@ def split_data(data, ratio):
 train_set, test_set = split_data(init_data, 0.2)
 
 
+data = (train_set.drop("left", axis=1)).values
+data_labels = train_set["left"].values
+data_labels = data_labels.reshape([len(data_labels), 1])
+
+num_features = data.shape[1]
+n_samples = data.shape[0]
+
+X_init = tf.placeholder(tf.float32, [None, num_features])
+Y_init = tf.placeholder(tf.float32, [None, 1])
+
+w_1 = tf.Variable(tf.random_normal([num_features, 10]))
+b_1 = tf.Variable(tf.random_normal([10]))
+
+layer_1 = tf.sigmoid(tf.add(tf.matmul(X_init, w_1), b_1))
+
+w_2 = tf.Variable(tf.random_normal([10, 1]))
+b_2 = tf.Variable(tf.random_normal([1]))
+
+output_layer = tf.sigmoid(tf.add(tf.matmul(layer_1, w_2), b_2))
+
+cost = -tf.reduce_mean(tf.multiply(Y_init, tf.log(output_layer)))
+
+## mess around with learning rate 
+optimizer = tf.train.AdamOptimizer(1e-3).minimize(cost)
+
+init = tf.global_variables_initializer()
+
+sess = tf.Session()
+
+sess.run(init)
+
+loss_values = []
+
+
+num_epochs = 1000
+for epoch in range(num_epochs):
+    _, c = sess.run([optimizer, cost], feed_dict={X_init:data, Y_init:data_labels})
+    loss_values.append(c)
+    sys.stdout.write("Epoch: {0}/{1} cost: {2}\r".format(epoch+1, num_epochs, c))
+    sys.stdout.flush()
+
+
+## right now getting final cost around 0.00132
+print("Final cost = {0}".format(sess.run(cost, feed_dict={X_init:data, Y_init:data_labels}) ) )
+
+
+## test is getting comparable numbers as well
+## However lets test the precision and recall and see what is happening
+test_data = (test_set.drop("left", axis=1)).values
+test_data_labels = test_set["left"].values
+test_data_labels = test_data_labels.reshape([len(test_data_labels), 1])
+print("Cost for test data: {0}".format(sess.run(cost, feed_dict={X_init:test_data, Y_init:test_data_labels}) ) )
+
+import matplotlib.pyplot as plt
+
+plt.plot(loss_values)
+plt.show()
+
+
+sess.close()
+
+
+
+
+
+
+
 
 
 
