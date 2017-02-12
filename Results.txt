@@ -34,3 +34,27 @@ Total Accuracy = 0.9664166666666667
 Final cost = 0.10726600140333176
 Cost for test data: 0.11037039011716843
 
+mini-batch 500|epochs 50|batch_size
+Stayed True: 9047
+Stayed False: 96
+Left True: 2531
+Left False: 326
+Precision = 0.8858942947147357
+Recall = 0.9634564141606395
+F1 score = 0.9230488694383662
+Total Accuracy = 0.9648333333333333
+Final cost = 0.11281970143318176
+Cost for test data: 0.11154118925333023
+
+mini-batch 600|epochs 50|batch_size
+Stayed True: 9055
+Stayed False: 88
+Left True: 2542
+Left False: 315
+Precision = 0.8897444872243612
+Recall = 0.9665399239543726
+F1 score = 0.9265536723163841
+Total Accuracy = 0.9664166666666667
+Final cost = 0.10991400480270386
+Cost for test data: 0.11098336428403854
+
