@@ -85,40 +85,43 @@ train_set, test_set = stratified_split_data(init_data, 0.2)
 # Now lets make sure we still have the same percentages
 
 print(train_set["left"].value_counts() / len(train_set["left"]))
+
 data = (train_set.drop("left", axis=1)).values
 data_labels = train_set["left"].values
 data_labels = data_labels.reshape([len(data_labels), 1])
+
 num_features = data.shape[1]
 n_samples = data.shape[0]
 
 X_init = tf.placeholder(tf.float32, [None, num_features])
 Y_init = tf.placeholder(tf.float32, [None, 1])
-#w_1 = tf.Variable(tf.truncated_normal([num_features, 10], stddev=0.01))
-#b_1 = tf.Variable(tf.truncated_normal([10], stddev=0.01))
-#layer_1 = tf.nn.relu(tf.add(tf.matmul(X_init, w_1), b_1))
-#w_3 = tf.Variable(tf.truncated_normal([10, 8], stddev=0.01))
-#b_3 = tf.Variable(tf.truncated_normal([8], stddev=0.01))
-#layer_2 = tf.nn.relu(tf.add(tf.matmul(layer_1, w_3), b_3))
-w_2 = tf.Variable(tf.truncated_normal([num_features, 1], stddev=0.01))
-b_2 = tf.Variable(tf.truncated_normal([1], stddev=0.01))
-output_layer = tf.nn.sigmoid(tf.add(tf.matmul(X_init, w_2), b_2))
-train_output_layer = tf.nn.softmax(tf.add(tf.matmul(X_init, w_2), b_2))
+
+w_1 = tf.Variable(tf.truncated_normal([num_features, 10], stddev=0.01))
+b_1 = tf.Variable(tf.truncated_normal([10], stddev=0.01))
+layer_1 = tf.nn.elu(tf.add(tf.matmul(X_init, w_1), b_1))
+
+w_2 = tf.Variable(tf.truncated_normal([10, 8], stddev=0.01))
+b_2 = tf.Variable(tf.truncated_normal([8], stddev=0.01))
+layer_2 = tf.nn.elu(tf.add(tf.matmul(layer_1, w_2), b_2))
+
+w_3 = tf.Variable(tf.truncated_normal([8, 1], stddev=0.01))
+b_3 = tf.Variable(tf.truncated_normal([1], stddev=0.01))
+
+output_layer = tf.nn.sigmoid(tf.add(tf.matmul(layer_2, w_3), b_3))
+train_output_layer = tf.nn.sigmoid(tf.add(tf.matmul(layer_2, w_3), b_3))
+
 cost = -tf.reduce_mean(tf.multiply(Y_init, tf.log(train_output_layer)) + (1 - Y_init)*tf.log(1 - train_output_layer) )
-
-#cost = tf.reduce_mean(tf.pow(tf.subtract(output_layer, Y_init), 2))
-#cost = tf.reduce_mean(tf.pow(output_layer - (Y_init * tf.log(output_layer)), 2) )
-#cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(output_layer, Y_init))
-#cost = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(output_layer, Y_init))
-## mess around with learning rate 
-
 optimizer = tf.train.AdamOptimizer(1e-3).minimize(cost)
+
 init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init)
+
 loss_values = []
 watch_values = []
-num_epochs = 50
-batch_size = 10
+#num_epochs = 7000 # good number for full batch
+num_epochs = 600
+batch_size = 50
 count = len(data)
 for epoch in range(num_epochs):
     start_n = 0
@@ -130,7 +133,8 @@ for epoch in range(num_epochs):
         sys.stdout.write("Batch:{0}/{1} cost:{2}\r".format(start_n+batch_size, count, c))
         sys.stdout.flush()
         start_n += batch_size
-    loss_values.append(sess.run(cost, feed_dict={X_init:data, Y_init:data_labels}))
+    c = sess.run(cost, feed_dict={X_init:data, Y_init:data_labels})
+    loss_values.append(c)
 #    print("")
     watch_values.append(sess.run(output_layer, feed_dict={X_init:data}))
     sys.stdout.write("Epoch: {0}/{1} cost: {2} \r".format(epoch+1, num_epochs, c))
@@ -159,9 +163,14 @@ def confusion_matrix(pred_data, act_data, threshold=0.7):
             stayed_false += 1
         elif pred_data[i][0] < threshold and act_data[i][0] == 0:
             stayed_true += 1
+    precision = left_true/np.max([1e-5, (left_true + left_false)])
+    recall = left_true/np.max([1e-5, (left_true + stayed_false)])
+    f1_score = 2*((precision*recall)/(precision+recall))
     print("Stayed True: {0}\nStayed False: {1}\nLeft True: {2}\nLeft False: {3}".format(stayed_true, stayed_false, left_true, left_false))
-    print("Precision = {0}".format(left_true/(left_true+left_false)))
-    print("Recall = {0}".format(left_true/(left_true+stayed_false)))
+    print("Precision = {0}".format(precision))
+    print("Recall = {0}".format(recall))
+    print("F1 score = {0}".format(f1_score))
+    print("Total Accuracy = {0}".format((stayed_true+left_true)/(len(pred_data))) )
 
 confusion_matrix(predictions, data_labels)
 ## test is getting comparable numbers as well

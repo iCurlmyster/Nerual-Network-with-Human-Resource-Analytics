@@ -1,0 +1,36 @@
+mini-batch 700|epochs 100|batch_size :
+Stayed True:9057
+Stayed False:86                   
+Left True: 2476
+Left False: 381
+Precision = 0.8666433321666084
+Recall = 0.9664324746291959
+F1 score = 0.9138217383281048
+Total Accuracy = 0.9610833333333333
+Final cost = 0.11960422992706299
+Cost for test data: 0.11185596138238907
+
+Full batch 7000:
+Stayed True: 9046
+Stayed False: 97
+Left True: 2527
+Left False: 330
+Precision: 0.8844942247112355
+Recall: 0.9630335365853658
+F1 score = 0.9220945083014049
+Total Accuracy = 0.9644166666666667
+Final cost = 0.11195039004087448
+Cost for test data: 0.11473102122545242
+
+mini-batch 700|epochs 50|batch_size
+Stayed True: 9055
+Stayed False: 88
+Left True: 2542
+Left False: 315
+Precision = 0.8897444872243612
+Recall = 0.9665399239543726
+F1 score = 0.9265536723163841
+Total Accuracy = 0.9664166666666667
+Final cost = 0.10726600140333176
+Cost for test data: 0.11037039011716843
+
