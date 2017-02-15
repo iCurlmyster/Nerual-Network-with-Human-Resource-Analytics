@@ -195,7 +195,7 @@ def confusion_matrix(pred_data, act_data, threshold=0.7):
     print("F1 score = {0}".format(f1_score))
     print("Total Accuracy = {0}".format((stayed_true+left_true)/(len(pred_data))) )
 
-confusion_matrix(predictions, data_labels)
+confusion_matrix(predictions, data_labels, 0.33)
 
 if is_verbose:
     ## test is getting comparable numbers as well
