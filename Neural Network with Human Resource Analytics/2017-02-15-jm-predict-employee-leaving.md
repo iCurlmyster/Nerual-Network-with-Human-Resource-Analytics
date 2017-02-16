@@ -3,6 +3,24 @@
 
 In this notebook we will explore analyzing a Human Resource analytics data set and create a neural network to predict whether an employee will leave or stay based on certain features we are given. We will be using the Tensorflow, numpy and pandas python libraries to achieve this goal. The original data set can be found [here](https://www.kaggle.com/ludobenistant/hr-analytics). The original python script is setup to accept command line flags to try different techniques I worked through this data with. If you are interested in seeing the results of full batch versus mini-batch training or Recitified Linear Unit(Relu) versus Exponential Linear Unit(Elu) activation functions then you can try it [here](https://github.com/iCurlmyster/Nerual-Network-with-Human-Resource-Analytics/blob/master/main.py).
 
+### Results of Neural Net
+
+Training set:
+
+- Precision of ~92% 
+- Recall of ~92%
+- F1 Score of ~92%
+- Total Accuracy of ~96%.
+
+Test set:
+
+- Precision of ~94%
+- Recall of ~93%
+- F1 Score of ~93%
+- Total Accuracy of ~97%
+
+### Implementation
+
 
 ```python
 ## Using magic commands for set up and showing working versions
@@ -278,7 +296,7 @@ plt.plot(loss_values);
 ```
 
 
-![png](output_43_0.png)
+![png](output_46_0.png)
 
 
 Now lets grab the predictions of our training set data.
@@ -399,4 +417,4 @@ sess.close()
     Cost for test  data: 0.11098336428403854
 
 
-Both cost values are around ~0.11, so it seems that we have a decent model to predict whether an employee will leave or not based on the features we look at.
+Both cost values are around ~0.11, so it seems that we have a decent model to predict whether an employee will leave or not based on the features we looked at.
