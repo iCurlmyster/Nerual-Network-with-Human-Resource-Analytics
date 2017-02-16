@@ -55,19 +55,6 @@ break_down_features(salary_unique_feature_names, "salary", init_data)
 init_data = init_data.drop(["sales", "salary"], axis=1)
 
 if is_verbose:
-    # Lets look at the first 5 entries of what these float values are in are data
-    print(init_data["satisfaction_level"][:5])
-    print(init_data["last_evaluation"][:5])
-    # They seem to be just percentages but lets make sure
-    ## 1.0
-    print("Max value satisfaction_level: {0}".format(init_data["satisfaction_level"].max()))
-    ## 0.0899
-    print("Min value satisfaction_level: {0}".format(init_data["satisfaction_level"].min()))
-    ## 1.0
-    print("Max value last_evaluation: {0}".format(init_data["last_evaluation"].max()))
-    ## 0.3599
-    print("Min value last_evaluation: {0}".format(init_data["last_evaluation"].min()))    
-    # So the values are bounded between 0 and 1
     # Now lets look at what the percentage of the people that left vs the people that stayed
     print(init_data["left"].value_counts() / len(init_data["left"])) ## 0: 0.761917;  1: 0.238083
 
@@ -204,6 +191,8 @@ if is_verbose:
     test_data_labels = test_set["left"].values
     test_data_labels = test_data_labels.reshape([len(test_data_labels), 1])
     print("Cost for test data: {0}".format(sess.run(cost, feed_dict={X_init:test_data, Y_init:test_data_labels}) ) )
+    test_predictions = sess.run(output_layer, feed_dict={X_init:test_data})
+    confusion_matrix(test_predictions, test_data_labels, 0.33)
 
 if do_plot:
     import matplotlib.pyplot as plt    
