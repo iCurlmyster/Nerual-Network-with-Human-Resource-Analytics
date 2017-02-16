@@ -87,3 +87,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# jupyter notebook checkpoints
+.ipynb_checkpoints
